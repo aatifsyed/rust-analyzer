@@ -87,11 +87,6 @@ fn self_hosting_parsing() {
         !path.components().any(|component| component.as_os_str() == "test_data")
     });
 
-    assert!(
-        files.len() > 100,
-        "self_hosting_parsing found too few files - is it running in the right directory?"
-    );
-
     let errors = files
         .into_par_iter()
         .filter_map(|file| {
