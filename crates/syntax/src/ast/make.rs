@@ -9,6 +9,8 @@
 //! API should require to assemble every node piecewise. The trick of
 //! `parse(format!())` we use internally is an implementation detail -- long
 //! term, it will be replaced with direct tree manipulation.
+use std::fmt::Write;
+
 use itertools::Itertools;
 use parser::T;
 use rowan::NodeOrToken;
@@ -248,6 +250,7 @@ pub fn impl_(
 // FIXME : We must make *_gen_args' type ast::GenericArgList but in order to do so we must implement in `edit_in_place.rs`
 // `add_generic_arg()` just like `add_generic_param()`
 // is implemented for `ast::GenericParamList`
+#[allow(clippy::too_many_arguments)]
 pub fn impl_trait(
     is_unsafe: bool,
     trait_gen_params: Option<ast::GenericParamList>,
@@ -757,15 +760,13 @@ pub fn match_arm_with_guard(
 }
 
 pub fn match_arm_list(arms: impl IntoIterator<Item = ast::MatchArm>) -> ast::MatchArmList {
-    let arms_str = arms
-        .into_iter()
-        .map(|arm| {
-            let needs_comma = arm.expr().map_or(true, |it| !it.is_block_like());
-            let comma = if needs_comma { "," } else { "" };
-            let arm = arm.syntax();
-            format!("    {arm}{comma}\n")
-        })
-        .collect::<String>();
+    let arms_str = arms.into_iter().fold(String::new(), |mut s, arm| {
+        let needs_comma = arm.expr().map_or(true, |it| !it.is_block_like());
+        let comma = if needs_comma { "," } else { "" };
+        let arm = arm.syntax();
+        s.write_fmt(format_args!("    {arm}{comma}\n")).unwrap();
+        s
+    });
     return from_text(&arms_str);
 
     fn from_text(text: &str) -> ast::MatchArmList {
@@ -988,6 +989,7 @@ pub fn variant(name: ast::Name, field_list: Option<ast::FieldList>) -> ast::Vari
     ast_from_text(&format!("enum f {{ {name}{field_list} }}"))
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn fn_(
     visibility: Option<ast::Visibility>,
     fn_name: ast::Name,

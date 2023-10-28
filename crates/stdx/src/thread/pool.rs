@@ -86,6 +86,7 @@ impl Pool {
         self.job_sender.send(job).unwrap();
     }
 
+    #[allow(clippy::len_without_is_empty)]
     pub fn len(&self) -> usize {
         self.extant_tasks.load(Ordering::SeqCst)
     }

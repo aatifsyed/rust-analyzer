@@ -28,6 +28,7 @@ impl<T> NonEmptyVec<T> {
     }
 
     #[inline]
+    #[allow(clippy::len_without_is_empty)]
     pub fn len(&self) -> usize {
         1 + self.rest.len()
     }

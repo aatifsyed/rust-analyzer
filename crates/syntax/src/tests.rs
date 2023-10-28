@@ -4,6 +4,7 @@ mod ast_src;
 mod sourcegen_ast;
 
 use std::{
+    fmt::Write as _,
     fs,
     path::{Path, PathBuf},
 };
@@ -99,10 +100,10 @@ fn self_hosting_parsing() {
         .collect::<Vec<_>>();
 
     if !errors.is_empty() {
-        let errors = errors
-            .into_iter()
-            .map(|(path, err)| format!("{}: {:?}\n", path.display(), err[0]))
-            .collect::<String>();
+        let errors = errors.into_iter().fold(String::new(), |mut s, (path, err)| {
+            s.write_fmt(format_args!("{}: {:?}\n", path.display(), err[0])).unwrap();
+            s
+        });
         panic!("Parsing errors:\n{errors}\n");
     }
 }

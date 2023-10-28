@@ -44,6 +44,7 @@ impl Limit {
     /// Checks whether the given value is below the limit.
     /// Returns `Ok` when `other` is below `self`, and `Err` otherwise.
     #[inline]
+    #[allow(clippy::result_unit_err)]
     pub fn check(&self, other: usize) -> Result<(), ()> {
         if other > self.upper_bound {
             Err(())
