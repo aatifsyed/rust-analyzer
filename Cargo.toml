@@ -1,6 +1,5 @@
 [workspace]
-members = ["xtask/", "crates/*"]
-exclude = ["crates/proc-macro-test/imp"]
+members = ["crates/*"]
 resolver = "2"
 
 [workspace.package]
@@ -8,26 +7,6 @@ rust-version = "1.70"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 authors = ["rust-analyzer team"]
-
-[profile.dev]
-# Disabling debug info speeds up builds a bunch,
-# and we don't rely on it for debugging that much.
-debug = 0
-
-[profile.dev.package]
-# These speed up local tests.
-rowan.opt-level = 3
-rustc-hash.opt-level = 3
-smol_str.opt-level = 3
-text-size.opt-level = 3
-# This speeds up `cargo xtask dist`.
-miniz_oxide.opt-level = 3
-
-[profile.release]
-incremental = true
-# Set this to 1 or 2 to get more useful backtraces in debugger.
-debug = 0
-
 
 [workspace.dependencies]
 # local crates
